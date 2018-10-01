@@ -1,4 +1,4 @@
 <resources>
   <string name="app_name">Text Classification</string>
-  <string name="my_text">This text contains an email address mark@stylingandroid.com and a URL https://blog.stylingandroid.com. This is a sample app for Styling Android which demonstrates the use of Text Classification</string>
+  <string name="my_text">This text contains an email address dummy@email.com and a URL https://blog.stylingandroid.com. This is a sample app for Styling Android which demonstrates the use of Text Classification</string>
 </resources>

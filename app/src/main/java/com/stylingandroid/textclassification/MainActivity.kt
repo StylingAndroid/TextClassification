@@ -11,9 +11,10 @@ import kotlinx.coroutines.experimental.async
 
 class MainActivity : AppCompatActivity() {
 
-    private val emailText = "mark@stylingandroid.com"
+    private val emailText = "dummy@email.com"
     private val urlText = "https://blog.stylingandroid.com"
     private val hybridText = "Email: $emailText"
+
     private lateinit var textClassificationManager: TextClassificationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
