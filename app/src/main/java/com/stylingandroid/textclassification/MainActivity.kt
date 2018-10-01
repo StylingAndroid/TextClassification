@@ -21,11 +21,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        textClassificationManager = getSystemService(Context.TEXT_CLASSIFICATION_SERVICE) as TextClassificationManager
+
         classifier()
+
+        text1.textClassifier = StylingAndroidTextClassifier(this, textClassificationManager.textClassifier)
     }
 
     private fun classifier() = async(CommonPool) {
-        textClassificationManager = getSystemService(Context.TEXT_CLASSIFICATION_SERVICE) as TextClassificationManager
         val textClassifier = textClassificationManager.textClassifier
         val emailClassification = textClassifier.classifyText(emailText, 0, emailText.length, LocaleList.getDefault())
         println(emailClassification)

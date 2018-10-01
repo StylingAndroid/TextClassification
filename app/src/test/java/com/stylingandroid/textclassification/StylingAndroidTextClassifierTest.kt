@@ -1,6 +1,8 @@
 package com.stylingandroid.textclassification
 
+import android.app.RemoteAction
 import android.content.Context
+import android.view.textclassifier.TextClassification
 import android.view.textclassifier.TextClassifier
 import android.view.textclassifier.TextSelection
 import com.nhaarman.mockitokotlin2.any
@@ -22,9 +24,13 @@ class StylingAndroidTextClassifierTest {
     private val selectionBuilder = mock(TextClassifierFactory::class.java)
     private val fallback = mock(TextClassifier::class.java)
     private val selection = mock(TextSelection::class.java)
+    private val classification = mock(TextClassification::class.java)
     private val selectionRequest = mock(TextSelection.Request::class.java)
+    private val classificationRequest = mock(TextClassification.Request::class.java)
+    private val remoteAction = mock(RemoteAction::class.java)
 
     private lateinit var classifier: StylingAndroidTextClassifier
+
 
     @Before
     fun setUp() {
@@ -32,6 +38,11 @@ class StylingAndroidTextClassifierTest {
         whenever(selectionRequest.startIndex).thenReturn(30)
         whenever(selectionRequest.endIndex).thenReturn(31)
         whenever(selectionBuilder.buildTextSelection(any(), any(), any(), any())).thenReturn(selection)
+        whenever(classificationRequest.startIndex).thenReturn(28)
+        whenever(classificationRequest.endIndex).thenReturn(43)
+        whenever(selectionBuilder.buildTextClassification(any(), any(), any())).thenReturn(classification)
+        whenever(selectionBuilder.buildRemoteAction(any(), any(), any(), any(), any())).thenReturn(remoteAction)
+        whenever(fallback.classifyText(any())).thenReturn(classification)
         whenever(fallback.suggestSelection(any())).thenReturn(selection)
     }
 
@@ -54,5 +65,25 @@ class StylingAndroidTextClassifierTest {
 
         verify(selectionBuilder, never()).buildTextSelection(any(), any(), any(), any())
         verify(fallback, times(1)).suggestSelection(any())
+    }
+
+    @Test
+    fun `when the text contains 'Styling Android' then the appropriate classification is returned`() {
+        whenever(classificationRequest.text).thenReturn(saString)
+
+        assertThat(classifier.classifyText(classificationRequest)).isNotNull
+
+        verify(selectionBuilder, times(1)).buildTextClassification("Styling Android", listOf(TextClassifier.TYPE_URL to 1.0f), listOf(remoteAction))
+        verify(fallback, never()).classifyText(any())
+    }
+
+    @Test
+    fun `when the text does not contain 'Styling Android' then the appropriate classification is returned`() {
+        whenever(classificationRequest.text).thenReturn(nonSaString)
+
+        assertThat(classifier.classifyText(classificationRequest)).isNotNull
+
+        verify(selectionBuilder, never()).buildTextClassification(any(), any(), any())
+        verify(fallback, times(1)).classifyText(any())
     }
 }

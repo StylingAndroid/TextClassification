@@ -12,6 +12,7 @@ class StylingAndroidTextClassifier(
 ) : TextClassifier by fallback {
 
     private val stylingAndroid = "Styling Android"
+    private val contentDescription = "Styling Android logo"
     private val stylingAndroidUri = "https://blog.stylingandroid.com"
     private val regex = Regex("Styling\\s?Android", RegexOption.IGNORE_CASE)
 
@@ -33,6 +34,23 @@ class StylingAndroidTextClassifier(
             contains(range.start) && contains(range.endInclusive)
 
     override fun classifyText(request: TextClassification.Request): TextClassification {
-        return fallback.classifyText(request)
+        return if (regex.matches(request.subSequence())) {
+            factory.buildTextClassification(
+                    request.subSequence().toString(),
+                    listOf(TextClassifier.TYPE_URL to 1.0f),
+                    listOf(factory.buildRemoteAction(
+                            context,
+                            R.drawable.ic_stylingandroid,
+                            stylingAndroid,
+                            contentDescription,
+                            stylingAndroidUri
+                    ))
+            )
+        } else {
+            fallback.classifyText(request)
+        }
     }
+
+    private fun TextClassification.Request.subSequence() =
+            text.subSequence(startIndex, endIndex)
 }
