@@ -1,6 +1,5 @@
 package com.stylingandroid.textclassification
 
-import android.app.RemoteAction
 import android.content.Context
 import android.view.textclassifier.TextClassifier
 import android.view.textclassifier.TextSelection
@@ -24,10 +23,8 @@ class StylingAndroidTextClassifierTest {
     private val fallback = mock(TextClassifier::class.java)
     private val selection = mock(TextSelection::class.java)
     private val selectionRequest = mock(TextSelection.Request::class.java)
-    private val remoteAction = mock(RemoteAction::class.java)
 
     private lateinit var classifier: StylingAndroidTextClassifier
-
 
     @Before
     fun setUp() {
@@ -35,7 +32,6 @@ class StylingAndroidTextClassifierTest {
         whenever(selectionRequest.startIndex).thenReturn(30)
         whenever(selectionRequest.endIndex).thenReturn(31)
         whenever(selectionBuilder.buildTextSelection(any(), any(), any(), any())).thenReturn(selection)
-        whenever(selectionBuilder.buildRemoteAction(any(), any(), any(), any(), any())).thenReturn(remoteAction)
         whenever(fallback.suggestSelection(any())).thenReturn(selection)
     }
 
